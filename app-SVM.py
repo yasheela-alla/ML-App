@@ -26,7 +26,13 @@ covid_data = {
 
 # Convert to Pandas DataFrame
 df = pd.DataFrame([covid_data])
-st.write("Current COVID-19 Data for UK:", df)
+
+# Streamlit UI
+st.title("COVID-19 Cases Prediction in UK")
+st.write("Predicting COVID-19 cases for the next day using **SVM (Support Vector Machine)**.")
+
+st.subheader("Current COVID-19 Data for UK")
+st.write(df)
 
 # Generate random historical data
 np.random.seed(42)
@@ -46,13 +52,27 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = SVR(kernel='rbf', C=100, gamma=0.1, epsilon=1.0)
 model.fit(X_train, y_train)
 
-# Streamlit App
-st.title("COVID-19 Cases Prediction in UK")
-st.write("Predicting COVID-19 cases for the next day using SVM.")
-
-# User Input
+# User Input for Prediction
+st.subheader("Predict Future Cases")
 day_input = st.number_input("Enter day number (e.g., 31 for prediction)", min_value=1, max_value=100)
 
 if st.button("Predict"):
     prediction = model.predict([[day_input]])
-    st.write(f"Predicted cases for day {day_input}: {int(prediction[0])}")
+    st.write(f"Predicted cases for day {day_input}: **{int(prediction[0])}**")
+
+    # Visualization
+    fig, ax = plt.subplots(figsize=(8, 5))
+    
+    # Plot historical cases
+    ax.plot(df_historical["day"], df_historical["cases"], marker='o', linestyle='-', color='blue', label="Historical Cases")
+    
+    # Plot prediction
+    ax.scatter(day_input, prediction[0], color='red', marker='o', s=100, label=f"Prediction (Day {day_input})")
+    
+    ax.set_xlabel("Day")
+    ax.set_ylabel("Number of Cases")
+    ax.set_title("COVID-19 Cases Trend & Prediction")
+    ax.legend()
+    ax.grid(True)
+    
+    st.pyplot(fig)
