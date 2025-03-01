@@ -45,7 +45,7 @@ covid_data = {
 }
 
 # ====== Display COVID-19 Data ======
-st.subheader("📌 Current COVID-19 Statistics in the India")
+st.subheader("Current COVID-19 Statistics in the India")
 st.dataframe(pd.DataFrame([covid_data]).T, use_container_width=True)
 
 # ====== Generate Historical Data ======
@@ -69,7 +69,7 @@ model.fit(X_train, y_train)
 st.subheader("🔮 Predict Future Cases")
 day_input = st.number_input("Enter the future day number to predict cases (e.g., 31, 32, ...)", min_value=1, max_value=100)
 
-if st.button("🔍 Predict Cases"):
+if st.button("Predict Cases"):
     prediction = model.predict([[day_input]])
     st.markdown(f"<p class='big-font' style='color: #ff4b4b;'>📈 Predicted Cases for Day {day_input}: {int(prediction[0])}</p>", unsafe_allow_html=True)
 
@@ -86,8 +86,3 @@ if st.button("🔍 Predict Cases"):
     plt.legend()
     plt.grid(True)
     st.pyplot(fig)
-
-# ====== Footer ======
-st.markdown("---")
-st.markdown("🚀 Built with **Python, Streamlit, Seaborn, and Machine Learning (SVM)**")
-st.markdown("📌 Data Source: [Disease.sh API](https://disease.sh/)")
