@@ -2,77 +2,92 @@ import requests
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 import streamlit as st
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 
-# Fetch COVID-19 data
-url = "https://disease.sh/v3/covid-19/countries/india"
+# ====== Streamlit Page Config ======
+st.set_page_config(page_title="COVID-19 UK Prediction", layout="centered")
+
+# ====== Styling with Markdown ======
+st.markdown(
+    """
+    <style>
+    .big-font { font-size:25px !important; font-weight: bold; }
+    .stButton>button { background-color: #ff4b4b; color: white; font-size: 16px; border-radius: 10px; }
+    .stMarkdown { font-size:18px !important; }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ====== Title & Introduction ======
+st.markdown('<p class="big-font">📊 COVID-19 Cases Prediction (UK)</p>', unsafe_allow_html=True)
+st.markdown("Using **Machine Learning (SVM)** to predict future COVID-19 cases based on historical data.")
+
+# ====== Fetch COVID-19 Data ======
+url = "https://disease.sh/v3/covid-19/countries/uk"
 r = requests.get(url)
 data = r.json()
 
 # Extract relevant fields
 covid_data = {
-    "cases": data["cases"],
-    "todayCases": data["todayCases"],
-    "deaths": data["deaths"],
-    "todayDeaths": data["todayDeaths"],
-    "recovered": data["recovered"],
-    "active": data["active"],
-    "critical": data["critical"],
-    "casesPerMillion": data["casesPerOneMillion"],
-    "deathsPerMillion": data["deathsPerOneMillion"],
+    "Total Cases": data["cases"],
+    "Cases Today": data["todayCases"],
+    "Total Deaths": data["deaths"],
+    "Deaths Today": data["todayDeaths"],
+    "Recovered": data["recovered"],
+    "Active Cases": data["active"],
+    "Critical Cases": data["critical"],
+    "Cases Per Million": data["casesPerOneMillion"],
+    "Deaths Per Million": data["deathsPerOneMillion"],
 }
 
-# Convert to Pandas DataFrame
-df = pd.DataFrame([covid_data])
+# ====== Display COVID-19 Data ======
+st.subheader("📌 Current COVID-19 Statistics in the UK")
+st.dataframe(pd.DataFrame([covid_data]).T, use_container_width=True)
 
-# Streamlit UI
-st.title("COVID-19 Cases Prediction in INDIA")
-st.write("Predicting COVID-19 cases for the next day using **SVM (Support Vector Machine)**.")
-
-st.subheader("Current COVID-19 Data for INDIA")
-st.write(df)
-
-# Generate random historical data
+# ====== Generate Historical Data ======
 np.random.seed(42)
-historical_cases = np.random.randint(30000, 70000, size=30)  # Last 30 days cases
+historical_cases = np.random.randint(30000, 70000, size=30)  # Simulated last 30 days cases
 historical_deaths = np.random.randint(500, 2000, size=30)
 
-df_historical = pd.DataFrame({"cases": historical_cases, "deaths": historical_deaths})
-df_historical["day"] = range(1, 31)
+df_historical = pd.DataFrame({"Cases": historical_cases, "Deaths": historical_deaths})
+df_historical["Day"] = range(1, 31)
 
-# Train-Test Split
-X = df_historical[["day"]]
-y = df_historical["cases"]
+# ====== Train SVM Model ======
+X = df_historical[["Day"]]
+y = df_historical["Cases"]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train SVM model
 model = SVR(kernel='rbf', C=100, gamma=0.1, epsilon=1.0)
 model.fit(X_train, y_train)
 
-# User Input for Prediction
-st.subheader("Predict Future Cases")
-day_input = st.number_input("Enter day number (e.g., 31 for prediction)", min_value=1, max_value=100)
+# ====== Prediction UI ======
+st.subheader("🔮 Predict Future Cases")
+day_input = st.number_input("Enter the future day number to predict cases (e.g., 31, 32, ...)", min_value=1, max_value=100)
 
-if st.button("Predict"):
+if st.button("🔍 Predict Cases"):
     prediction = model.predict([[day_input]])
-    st.write(f"Predicted cases for day {day_input}: **{int(prediction[0])}**")
+    st.markdown(f"<p class='big-font' style='color: #ff4b4b;'>📈 Predicted Cases for Day {day_input}: {int(prediction[0])}</p>", unsafe_allow_html=True)
 
-    # Visualization
-    fig, ax = plt.subplots(figsize=(8, 5))
+    # ====== Visualization ======
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.lineplot(x=df_historical["Day"], y=df_historical["Cases"], marker='o', label="Historical Cases", color="blue")
     
-    # Plot historical cases
-    ax.plot(df_historical["day"], df_historical["cases"], marker='o', linestyle='-', color='blue', label="Historical Cases")
-    
-    # Plot prediction
-    ax.scatter(day_input, prediction[0], color='red', marker='o', s=100, label=f"Prediction (Day {day_input})")
-    
-    ax.set_xlabel("Day")
-    ax.set_ylabel("Number of Cases")
-    ax.set_title("COVID-19 Cases Trend & Prediction")
-    ax.legend()
-    ax.grid(True)
-    
+    # Highlight the prediction
+    ax.scatter(day_input, prediction[0], color='red', s=150, label=f"Prediction (Day {day_input})", edgecolors='black')
+
+    plt.xlabel("Days", fontsize=14)
+    plt.ylabel("Number of Cases", fontsize=14)
+    plt.title("📊 COVID-19 Cases Trend & Prediction", fontsize=16, fontweight='bold')
+    plt.legend()
+    plt.grid(True)
     st.pyplot(fig)
+
+# ====== Footer ======
+st.markdown("---")
+st.markdown("🚀 Built with **Python, Streamlit, Seaborn, and Machine Learning (SVM)**")
+st.markdown("📌 Data Source: [Disease.sh API](https://disease.sh/)")
