@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 
 # Fetch COVID-19 data
-url = "https://disease.sh/v3/covid-19/countries/uk"
+url = "https://disease.sh/v3/covid-19/countries/india"
 r = requests.get(url)
 data = r.json()
 
@@ -28,10 +28,10 @@ covid_data = {
 df = pd.DataFrame([covid_data])
 
 # Streamlit UI
-st.title("COVID-19 Cases Prediction in UK")
+st.title("COVID-19 Cases Prediction in INDIA")
 st.write("Predicting COVID-19 cases for the next day using **SVM (Support Vector Machine)**.")
 
-st.subheader("Current COVID-19 Data for UK")
+st.subheader("Current COVID-19 Data for INDIA")
 st.write(df)
 
 # Generate random historical data
