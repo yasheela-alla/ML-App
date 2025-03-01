@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 
 # ====== Streamlit Page Config ======
-st.set_page_config(page_title="COVID-19 UK Prediction", layout="centered")
+st.set_page_config(page_title="COVID-19 India Prediction", layout="centered")
 
 # ====== Styling with Markdown ======
 st.markdown(
@@ -23,11 +23,11 @@ st.markdown(
 )
 
 # ====== Title & Introduction ======
-st.markdown('<p class="big-font">📊 COVID-19 Cases Prediction (UK)</p>', unsafe_allow_html=True)
+st.markdown('<p class="big-font">📊 COVID-19 Cases Prediction (India)</p>', unsafe_allow_html=True)
 st.markdown("Using **Machine Learning (SVM)** to predict future COVID-19 cases based on historical data.")
 
 # ====== Fetch COVID-19 Data ======
-url = "https://disease.sh/v3/covid-19/countries/uk"
+url = "https://disease.sh/v3/covid-19/countries/india"
 r = requests.get(url)
 data = r.json()
 
@@ -45,7 +45,7 @@ covid_data = {
 }
 
 # ====== Display COVID-19 Data ======
-st.subheader("📌 Current COVID-19 Statistics in the UK")
+st.subheader("📌 Current COVID-19 Statistics in the India")
 st.dataframe(pd.DataFrame([covid_data]).T, use_container_width=True)
 
 # ====== Generate Historical Data ======
