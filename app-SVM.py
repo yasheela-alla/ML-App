@@ -66,12 +66,12 @@ model = SVR(kernel='rbf', C=100, gamma=0.1, epsilon=1.0)
 model.fit(X_train, y_train)
 
 # ====== Prediction UI ======
-st.subheader("🔮 Predict Future Cases")
+st.subheader("Predict Future Cases")
 day_input = st.number_input("Enter the future day number to predict cases (e.g., 31, 32, ...)", min_value=1, max_value=100)
 
 if st.button("Predict Cases"):
     prediction = model.predict([[day_input]])
-    st.markdown(f"<p class='big-font' style='color: #ff4b4b;'>📈 Predicted Cases for Day {day_input}: {int(prediction[0])}</p>", unsafe_allow_html=True)
+    st.markdown(f"<p class='big-font' style='color: #ff4b4b;'> Predicted Cases for Day {day_input}: {int(prediction[0])}</p>", unsafe_allow_html=True)
 
     # ====== Visualization ======
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -86,3 +86,6 @@ if st.button("Predict Cases"):
     plt.legend()
     plt.grid(True)
     st.pyplot(fig)
+    
+# ====== Footer ======
+st.markdown("---")
