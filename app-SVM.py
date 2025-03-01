@@ -71,7 +71,7 @@ day_input = st.number_input("Enter the future day number to predict cases (e.g.,
 
 if st.button("Predict Cases"):
     prediction = model.predict([[day_input]])
-    st.markdown(f"<p class='big-font' style='color: #ff4b4b;'> Predicted Cases for Day {day_input}: {int(prediction[0])}</p>", unsafe_allow_html=True)
+    st.markdown(f"<p class='big-font' style='color: #f5f5f5;'> Predicted Cases for Day {day_input}: {int(prediction[0])}</p>", unsafe_allow_html=True)
 
     # ====== Visualization ======
     fig, ax = plt.subplots(figsize=(10, 6))
